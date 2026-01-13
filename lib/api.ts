@@ -1,5 +1,6 @@
 // API client configuration and helper functions
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "gigflow-backend-production-68cd.up.railway.app/api"
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://gigflow-backend-production-68cd.up.railway.app"
 
 interface FetchOptions extends RequestInit {
   token?: string
@@ -18,7 +19,10 @@ async function apiClient(endpoint: string, options: FetchOptions = {}) {
     credentials: "include", // Important for cookies
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, config)
+  // Ensure only single slash between base URL and endpoint
+  const url = endpoint.startsWith("/") ? `${API_URL}${endpoint}` : `${API_URL}/${endpoint}`
+
+  const response = await fetch(url, config)
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: "An error occurred" }))
