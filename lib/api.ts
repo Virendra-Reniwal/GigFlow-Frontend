@@ -1,6 +1,5 @@
 // API client configuration and helper functions
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://gigflow-backend-production-68cd.up.railway.app"
+const API_URL = process.env.NEXT_PUBLIC_API_URL 
 
 interface FetchOptions extends RequestInit {
   token?: string
