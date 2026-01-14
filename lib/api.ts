@@ -1,3 +1,8 @@
+// lib/api.ts
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "" // empty = same origin (vercel rewrite)
+
 interface FetchOptions extends RequestInit {
   token?: string
 }
@@ -15,16 +20,16 @@ async function apiClient(endpoint: string, options: FetchOptions = {}) {
     credentials: "include",
   }
 
-  // ✅ Same-origin API call (Vercel proxy)
-  const url = `/api/${endpoint.replace(/^\/+/, "")}`
+  // ✅ Works for both dev & prod
+  const url = endpoint.startsWith("/")
+    ? `${API_URL}${endpoint}`
+    : `${API_URL}/${endpoint}`
 
   const response = await fetch(url, config)
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: "API request failed",
-    }))
-    throw new Error(error.message)
+    const error = await response.json().catch(() => ({ message: "API error" }))
+    throw new Error(error.message || "Request failed")
   }
 
   return response.json()
