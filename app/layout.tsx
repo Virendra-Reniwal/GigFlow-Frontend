@@ -13,7 +13,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "GigFlow - Freelance Marketplace",
   description: "Connect with freelancers and clients for your next project",
-  generator: "v0.app",
   icons: {
     icon: [
       {
