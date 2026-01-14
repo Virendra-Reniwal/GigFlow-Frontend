@@ -1,6 +1,3 @@
-// API client configuration and helper functions
-const API_URL = process.env.NEXT_PUBLIC_API_URL 
-
 interface FetchOptions extends RequestInit {
   token?: string
 }
@@ -15,17 +12,19 @@ async function apiClient(endpoint: string, options: FetchOptions = {}) {
       ...(token && { Authorization: `Bearer ${token}` }),
       ...fetchOptions.headers,
     },
-    credentials: "include", // Important for cookies
+    credentials: "include",
   }
 
-  // Ensure only single slash between base URL and endpoint
-  const url = endpoint.startsWith("/") ? `${API_URL}${endpoint}` : `${API_URL}/${endpoint}`
+  // ✅ Same-origin API call (Vercel proxy)
+  const url = `/api/${endpoint.replace(/^\/+/, "")}`
 
   const response = await fetch(url, config)
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "An error occurred" }))
-    throw new Error(error.message || "API request failed")
+    const error = await response.json().catch(() => ({
+      message: "API request failed",
+    }))
+    throw new Error(error.message)
   }
 
   return response.json()
